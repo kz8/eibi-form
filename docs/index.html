@@ -4,15 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>荷物登録フォーム</title>
+<style>
+  * { margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; }
+  iframe { width: 100%; height: 100%; border: none; }
+</style>
+</head>
+<body>
+<iframe id="form-frame" sandbox="allow-scripts allow-forms allow-popups allow-downloads allow-same-origin" allowfullscreen></iframe>
 <script>
 (function() {
   var gasUrl = 'https://script.google.com/macros/s/AKfycbxtlohnAfhotpjnfeleTxIMOLlgw71GAxdpB0Gz6hi4uld_NItEmKTK-K58C1qC7heI/exec';
   var params = window.location.search;
-  window.location.replace(gasUrl + params);
+  document.getElementById('form-frame').src = gasUrl + params;
 })();
 </script>
-</head>
-<body>
-<p style="font-family:sans-serif;text-align:center;margin-top:40px;color:#666">リダイレクト中...</p>
 </body>
 </html>
