@@ -17,6 +17,14 @@
 (function() {
   var gasUrl = 'https://script.google.com/macros/s/AKfycbxtlohnAfhotpjnfeleTxIMOLlgw71GAxdpB0Gz6hi4uld_NItEmKTK-K58C1qC7heI/exec';
   var params = window.location.search;
+  var sp = new URLSearchParams(params);
+  var mode = sp.get('mode') || '';
+  var titles = {
+    opview: '参加状況ビューア',
+    receiving: '入庫記録',
+    guidance: '集荷案内メール送信'
+  };
+  if (titles[mode]) document.title = titles[mode];
   document.getElementById('form-frame').src = gasUrl + params;
 })();
 </script>

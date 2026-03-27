@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LuggageWebApp ポータル</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #f5f6f8; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+  .login { background: #fff; padding: 32px; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); width: 340px; text-align: center; }
+  .login img { width: 48px; margin-bottom: 12px; }
+  .login h1 { font-size: 16px; color: #333; margin-bottom: 20px; }
+  .login input { width: 100%; padding: 10px 14px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; font-family: inherit; }
+  .login button { margin-top: 12px; width: 100%; padding: 10px; background: #1a73e8; color: #fff; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; font-family: inherit; }
+  .login button:hover { background: #1557b0; }
+  .login .error { color: #d93025; font-size: 12px; margin-top: 8px; display: none; }
+  #portal { display: none; }
+</style>
+</head>
+<body>
+<div class="login" id="loginBox">
+  <img src="favicon.png" alt="">
+  <h1>LuggageWebApp ポータル</h1>
+  <input type="password" id="pw" placeholder="パスワード" autofocus onkeydown="if(event.key==='Enter')unlock()">
+  <button onclick="unlock()">ログイン</button>
+  <div class="error" id="err">パスワードが正しくありません</div>
+</div>
+<div id="portal"></div>
+<script>
+var ENC = {"salt":"l34OobSiWeSdxeILbt42mg==","iv":"aytkdolCOGdwTWhy","tag":"yjiyN3GjFD9htR7lLWbKIQ==","data":"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"};
+
+function b64ToArr(b64) {
+  var bin = atob(b64);
+  var arr = new Uint8Array(bin.length);
+  for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+  return arr;
+}
+
+async function unlock() {
+  var pw = document.getElementById('pw').value;
+  if (!pw) return;
+  try {
+    var salt = b64ToArr(ENC.salt);
+    var iv = b64ToArr(ENC.iv);
+    var tag = b64ToArr(ENC.tag);
+    var data = b64ToArr(ENC.data);
+
+    var enc = new TextEncoder();
+    var keyMaterial = await crypto.subtle.importKey('raw', enc.encode(pw), 'PBKDF2', false, ['deriveKey']);
+    var key = await crypto.subtle.deriveKey(
+      { name: 'PBKDF2', salt: salt, iterations: 100000, hash: 'SHA-256' },
+      keyMaterial,
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['decrypt']
+    );
+
+    var combined = new Uint8Array(data.length + tag.length);
+    combined.set(data);
+    combined.set(tag, data.length);
+
+    var decrypted = await crypto.subtle.decrypt(
+      { name: 'AES-GCM', iv: iv },
+      key,
+      combined
+    );
+
+    var html = new TextDecoder().decode(decrypted);
+    document.getElementById('loginBox').style.display = 'none';
+    document.getElementById('portal').style.display = 'block';
+    document.getElementById('portal').innerHTML = html;
+  } catch (e) {
+    document.getElementById('err').style.display = 'block';
+  }
+}
+</script>
+</body>
+</html>
