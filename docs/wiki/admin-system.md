@@ -1,85 +1,102 @@
 # システム構成
 
-## 技術スタック
+> このページは管理者・開発者向けの技術情報です。日常の運用操作については [運用ガイド](README.md) を参照してください。
 
-- **バックエンド**: Google Apps Script（スプレッドシートバウンド）
-- **フロントエンド**: HTML/CSS/JavaScript（バニラ）
-- **ホスティング**: GitHub Pages（iframe経由）+ GAS Webアプリ
-- **ソース管理**: clasp + GitHub（Private: kz8/LuggageWebApp）
-- **ドキュメント**: Docsify（GitHub Pages: kz8/eibi-form）
+## システムの全体像
 
-## URL構成
-
-| URL | 内容 |
-|---|---|
-| `kz8.github.io/eibi-form/?code=XXX` | 荷物登録フォーム（個校） |
-| `kz8.github.io/eibi-form/?corp=XXX` | 荷物登録フォーム（法人） |
-| `kz8.github.io/eibi-form/?mode=opview` | 参加状況ビューア |
-| `kz8.github.io/eibi-form/?mode=receiving` | 入庫記録 |
-| `kz8.github.io/eibi-form/?mode=guidance` | 集荷案内メール送信 |
-| `kz8.github.io/eibi-form/portal.html` | ポータル（パスワード保護） |
-| `kz8.github.io/eibi-form/wiki/` | Wiki（本ページ） |
-
-## iframe構成
-
-顧客・運営ともにGitHub Pages経由でアクセスする。GitHub PagesのHTMLがGAS WebアプリURLをiframeで埋め込む。
+このシステムは、Googleスプレッドシートをデータベースとして使い、Google Apps Script（GAS）でWebアプリを動かしています。
+ユーザーがアクセスするURLは GitHub Pages 上にあり、内部的に GAS の画面を埋め込む（iframe）形で動作しています。
 
 ```
-ユーザー → kz8.github.io/eibi-form/
-         → iframe内: script.google.com/.../exec
+ユーザーのブラウザ
+  → kz8.github.io/eibi-form/（GitHub Pages）
+    → 内部で script.google.com/.../exec（GAS Webアプリ）を表示
 ```
 
-**採用理由**:
-- Googleログイン時の `/u/N/` URL書き換え問題を回避
-- GASの「このアプリケーションはGoogle Apps Scriptを使用して...」バナーが非表示
-- ファビコンの設定が可能
+> **なぜ直接GASのURLではないのか？**
+> - Googleアカウント切り替え時のURL書き換え問題を回避するため
+> - GASの警告バナー（「このアプリケーションは…」）を非表示にするため
+> - ブラウザのタブにアイコン（ファビコン）を表示するため
 
-## GAS実行アカウント
+## URL一覧
 
-| 操作 | 実行アカウント |
-|---|---|
-| Webアプリ（フォーム・ビューア・メール送信） | デプロイ設定アカウント（eibi.soudankai@gmail.com） |
-| CL変更検知トリガー | トリガー設定者（eibi.soudankai@gmail.com） |
-| 集荷メール送信（SSダイアログ） | SSを開いているユーザー |
-
-> **重要**: デプロイは必ず `eibi.soudankai@gmail.com` で行うこと
-
-## メール送信エイリアス
-
-- 送信元表示: `soudankai-s@eibi.co.jp`
-- 実際の送信: `eibi.soudankai@gmail.com`（GAS実行アカウント）
-- 転送設定: `soudankai-s@eibi.co.jp` → `eibi.soudankai@gmail.com`
-
-## 定期トリガー
-
-| 関数 | スケジュール | 内容 |
+| URL | 内容 | 操作ガイド |
 |---|---|---|
-| runCLChangeNotification | 毎日8時・17時 | 営業SS差異＋フォーム変更依頼の通知メール |
+| `kz8.github.io/eibi-form/?code=XXX` | 荷物登録フォーム（個校） | [操作ガイド](guide-form.md) |
+| `kz8.github.io/eibi-form/?corp=XXX` | 荷物登録フォーム（法人） | [操作ガイド](guide-form.md) |
+| `kz8.github.io/eibi-form/?mode=opview` | 参加状況ビューア | [操作ガイド](guide-opview.md) |
+| `kz8.github.io/eibi-form/?mode=receiving` | 入庫記録 | [操作ガイド](guide-receiving.md) |
+| `kz8.github.io/eibi-form/?mode=guidance` | 集荷案内メール送信 | [操作ガイド](guide-mail.md) |
+| `kz8.github.io/eibi-form/portal.html` | ポータル（パスワード保護） | — |
+| `kz8.github.io/eibi-form/wiki/` | Wiki（本ページ） | — |
 
-## clasp運用
+## 実行アカウント
 
-- 複数環境で編集する場合は、**作業前に `clasp pull`** で最新を取得する
-- `clasp push` は最後に実行した内容でリモートを上書きする（マージ機能なし）
-- `clasp deployments` でデプロイ一覧を確認可能
+このシステムの裏側では `eibi.soudankai@gmail.com` というGoogleアカウントが動いています。
+メール送信やデータの読み書きは、このアカウントの権限で実行されます。
 
-## 主要シート一覧
-
-| シート | 用途 |
+| 操作 | 実行されるアカウント |
 |---|---|
-| 縦持ち_自動 | CSV取込データ（参加校×企画の縦持ち） |
-| 学校基本情報 | 学校マスタ（ヘッダー行3、データ行4〜） |
+| Webアプリ（フォーム・ビューア・メール送信） | eibi.soudankai@gmail.com |
+| CL変更検知トリガー（自動通知） | eibi.soudankai@gmail.com |
+| 集荷メール送信（スプレッドシートから） | スプレッドシートを開いているユーザー |
+
+> **重要**: プログラムの更新（デプロイ）は必ず `eibi.soudankai@gmail.com` で行ってください。
+> 別のアカウントでデプロイすると、すべてのWebアプリの実行アカウントが変わってしまいます。
+
+## メールの送信元
+
+参加校に届くメールの送信元は `soudankai-s@eibi.co.jp` と表示されますが、
+実際には `eibi.soudankai@gmail.com` から送信しています（Gmailのエイリアス機能を利用）。
+
+参加校が返信した場合は、`soudankai-s@eibi.co.jp` 宛てに届きます。
+このアドレスは `eibi.soudankai@gmail.com` に転送されているため、Gmailで確認できます。
+
+## 自動通知（定期トリガー）
+
+以下の処理が毎日自動で実行されます。
+
+| 実行時刻 | 内容 |
+|---|---|
+| 毎日 8:00 と 17:00 | 営業SSとの差異チェック + フォーム変更依頼の通知メール |
+
+通知メールは `eibi.soudankai@gmail.com` に届きます。
+
+## スプレッドシートのシート一覧
+
+データはすべてGoogleスプレッドシートの各シートに保存されています。
+
+| シート名 | 何が入っているか |
+|---|---|
+| 縦持ち_自動 | CSV取込データ（参加校×企画の組み合わせ） |
+| 学校基本情報 | 学校の基本情報（名前・コード・担当者など） |
 | 企画設定 | 企画・ルート・会場の設定 |
 | 物流設定 | ルートごとの送付期限 |
 | 入庫管理 | 予定個口・入庫個口の管理 |
 | 荷物登録_回答 | フォーム回答の蓄積 |
-| 26社員マスタ | 担当営業の選択肢（A列: 社員名） |
+| 26社員マスタ | 担当営業のリスト |
 | 法人マスタ | 法人コード・代表校コード |
 | 送信ログ | 集荷メール送信履歴 |
-| 変更依頼 | 顧客からの担当者情報変更依頼 |
-| SS差異確認 | 営業SS差異の確認済みスナップショット |
+| 変更依頼 | 参加校からの担当者情報変更依頼 |
+| SS差異確認 | 営業SSとの差異確認済みスナップショット |
 
-## パフォーマンス最適化
+## 表示が遅い・古いと感じたら（キャッシュについて）
 
-- CacheService: 企画設定(30分)、OpViewデータ(5分)、ダッシュボード(5分)
-- 書込み時にキャッシュ自動無効化
-- メニュー「システム」→「キャッシュクリア」で手動リセット可能
+このシステムはデータの読み込みを速くするため、一時的にデータを保存（キャッシュ）しています。
+
+| データ | キャッシュ時間 |
+|---|---|
+| 企画設定 | 30分 |
+| 参加状況ビューア | 5分 |
+| ダッシュボード | 5分 |
+
+データを更新したのに画面に反映されない場合は、スプレッドシートのメニュー「システム」→「キャッシュクリア」を実行してからページを再読み込みしてください。
+データの書込み（保存）を行った場合は、キャッシュは自動的にクリアされます。
+
+## ソースコードの管理（開発者向け）
+
+ソースコードは GitHub（kz8/LuggageWebApp）で管理し、clasp というツールでGASと同期しています。
+
+- 複数のパソコンで開発する場合は、**作業前に必ず `clasp pull`** で最新を取得してください
+- `clasp push` は手元の内容でリモートを上書きします（マージ機能はありません）
+- `clasp deployments` でデプロイ一覧を確認できます
