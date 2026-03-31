@@ -28,6 +28,7 @@
 | `kz8.github.io/eibi-form/?mode=receiving` | 入庫記録 | [操作ガイド](guide-receiving.md) |
 | `kz8.github.io/eibi-form/?mode=guidance` | 集荷案内メール送信 | [操作ガイド](guide-mail.md) |
 | `kz8.github.io/eibi-form/portal.html` | ポータル（パスワード保護） | — |
+| `kz8.github.io/eibi-form/guide.html` | 荷物取扱いのご案内（顧客向け） | — |
 | `kz8.github.io/eibi-form/wiki/` | Wiki（本ページ） | — |
 
 ## 実行アカウント
