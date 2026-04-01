@@ -41,13 +41,15 @@
   function showFrame() {
     if (done) return;
     done = true;
-    document.getElementById('loader').classList.add('hide');
-    frame.classList.add('loaded');
+    setTimeout(function() {
+      document.getElementById('loader').classList.add('hide');
+      frame.classList.add('loaded');
+    }, 500);
   }
   var loadCount = 0;
   frame.addEventListener('load', function() {
     loadCount++;
-    if (loadCount >= 2) showFrame();
+    if (loadCount >= 2) setTimeout(showFrame, 300);
   });
   setTimeout(showFrame, 8000);
   frame.src = gasUrl + params;
