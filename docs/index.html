@@ -7,8 +7,9 @@
 <link rel="icon" type="image/png" href="favicon.png">
 <style>
   * { margin: 0; padding: 0; }
-  html, body { height: 100%; overflow: hidden; }
-  iframe { width: 100%; height: 100%; border: none; }
+  html, body { height: 100%; overflow: hidden; background: #f5f6f8; }
+  iframe { width: 100%; height: 100%; border: none; opacity: 0; transition: opacity .4s; }
+  iframe.loaded { opacity: 1; }
   .loader { position: fixed; inset: 0; background: #f5f6f8; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; transition: opacity .4s; }
   .loader.hide { opacity: 0; pointer-events: none; }
   .loader img { width: 48px; margin-bottom: 16px; }
@@ -22,7 +23,7 @@
   <img src="favicon.png" alt="">
   <p>読み込み中<span class="dots"></span></p>
 </div>
-<iframe id="form-frame" sandbox="allow-scripts allow-forms allow-popups allow-downloads allow-same-origin allow-modals" allowfullscreen onload="document.getElementById('loader').classList.add('hide')"></iframe>
+<iframe id="form-frame" sandbox="allow-scripts allow-forms allow-popups allow-downloads allow-same-origin allow-modals" allowfullscreen></iframe>
 <script>
 (function() {
   var gasUrl = 'https://script.google.com/macros/s/AKfycbxtlohnAfhotpjnfeleTxIMOLlgw71GAxdpB0Gz6hi4uld_NItEmKTK-K58C1qC7heI/exec';
@@ -35,7 +36,21 @@
     guidance: '集荷案内メール送信'
   };
   if (titles[mode]) document.title = titles[mode];
-  document.getElementById('form-frame').src = gasUrl + params;
+  var frame = document.getElementById('form-frame');
+  var done = false;
+  function showFrame() {
+    if (done) return;
+    done = true;
+    document.getElementById('loader').classList.add('hide');
+    frame.classList.add('loaded');
+  }
+  var loadCount = 0;
+  frame.addEventListener('load', function() {
+    loadCount++;
+    if (loadCount >= 2) showFrame();
+  });
+  setTimeout(showFrame, 8000);
+  frame.src = gasUrl + params;
 })();
 </script>
 </body>
