@@ -27,6 +27,23 @@
   .address-box strong { font-size: 14px; }
 
   .footer { text-align: center; font-size: 12px; color: #888; margin-top: 32px; padding-top: 16px; border-top: 1px solid #e0e0e0; line-height: 1.6; }
+
+  @media print {
+    body { line-height: 1.5; }
+    .page { padding: 16px 18px 20px; }
+    .header-title { font-size: 22px; margin-bottom: 16px; }
+    .section { margin-bottom: 14px; padding: 12px 16px; }
+    .section-title { font-size: 15px; padding-bottom: 4px; margin-bottom: 8px; }
+    .section p { font-size: 12px; margin-bottom: 4px; }
+    .section .note { font-size: 11px; margin-top: 2px; }
+    .step { margin-bottom: 8px; gap: 8px; }
+    .step-badge { font-size: 10px; padding: 2px 8px; }
+    .step-label { font-size: 13px; }
+    .step-body { font-size: 12px; }
+    .address-box { padding: 8px 14px; margin-top: 6px; font-size: 12px; line-height: 1.5; }
+    .address-box strong { font-size: 12px; }
+    .footer { margin-top: 16px; padding-top: 10px; font-size: 11px; }
+  }
 </style>
 </head>
 <body>
@@ -39,6 +56,7 @@
     <div class="section-title">荷物情報の登録</div>
     <p>メールに記載のフォームURLにアクセスし、会場ごとの送付方法と個口数をご登録ください。</p>
     <div class="note">送付方法は「倉庫へ送付」「会場直送」「持込」から選択できます。</div>
+    <div class="note">「会場直送」の場合は開催日当日の午前中着指定にてお手配ください。一部午前中から開催の会場は、前日着でお手配ください。</div>
     <div class="note">法人でまとめてお申込みの場合は、所属校の情報を一括でご登録いただけます。</div>
   </div>
 
