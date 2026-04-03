@@ -4,6 +4,7 @@
   - [荷物登録フォーム](guide-form.md)
   - [参加状況ビューア](guide-opview.md)
   - [入庫記録](guide-receiving.md)
+  - [配付物管理](guide-distribution.md)
 - **管理**
   - [システム構成](admin-system.md)
   - [アカウント・権限](admin-accounts.md)
