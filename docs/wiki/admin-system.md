@@ -27,6 +27,8 @@
 | `kz8.github.io/eibi-form/?mode=opview` | 参加状況ビューア | [操作ガイド](guide-opview.md) |
 | `kz8.github.io/eibi-form/?mode=receiving` | 入庫記録 | [操作ガイド](guide-receiving.md) |
 | `kz8.github.io/eibi-form/?mode=guidance` | 集荷案内メール送信 | [操作ガイド](guide-mail.md) |
+| `kz8.github.io/eibi-form/?mode=remind` | リマインドメール送信 | [操作ガイド](guide-mail.md) |
+| `kz8.github.io/eibi-form/?mode=distribution` | 配付物管理ビューア | [操作ガイド](guide-distribution.md) |
 | `kz8.github.io/eibi-form/portal.html` | ポータル（パスワード保護） | — |
 | `kz8.github.io/eibi-form/guide.html` | 荷物取扱いのご案内（顧客向け） | — |
 | `kz8.github.io/eibi-form/wiki/` | Wiki（本ページ） | — |
@@ -53,15 +55,32 @@
 参加校が返信した場合は、`soudankai-s@eibi.co.jp` 宛てに届きます。
 このアドレスは `eibi.soudankai@gmail.com` に転送されているため、Gmailで確認できます。
 
-## 自動通知（定期トリガー）
+## 自動化（定期トリガー）
 
-以下の処理が毎日自動で実行されます。
+以下の処理が定期的に自動実行されます。**すべて土日はスキップ** されます（関数内で曜日チェック）。
+
+### GASトリガー（時間主導型）
+
+| 実行時刻 | 関数 | 内容 | 通知先 |
+|---|---|---|---|
+| 毎日 8:00 / 17:00 | `runCLChangeNotification` | 営業SSとの差異 + フォーム変更依頼の通知メール | eibi.soudankai@gmail.com |
+| 毎朝 7-8時 | `autoCreateGuidanceDrafts` | 集荷案内メールの下書き自動作成（期限14〜21日後の対象） | chikoshima@eibi.co.jp |
+| 毎朝 7-8時 | `autoCreateReminderDrafts` | リマインドメールの下書き自動作成（未回答 期限3日前/超過） | chikoshima@eibi.co.jp |
+| 1時間ごと | `autoImportCSV` | CSV取込フォルダにCSVがあれば取込 | （ログのみ） |
+
+> 自動下書き作成は **下書きを作るだけで送信しません**。出社後にGmail下書きフォルダで内容確認 → 手動で送信。
+> 下書きを削除すれば再実行で再作成されます（リマインド送信済みフラグは実送信時のみ立つため）。
+
+### GitHub Actions トリガー（CSV自動取得）
+
+eibi-csv-auto リポジトリで稼働中の Playwright スクリプト：
 
 | 実行時刻 | 内容 |
 |---|---|
-| 毎日 8:00 と 17:00 | 営業SSとの差異チェック + フォーム変更依頼の通知メール |
+| 平日 9:00〜19:00 の毎時 | 参加申込システムから大学・専門学校CSVを自動ダウンロードしGoogle Driveへアップロード |
 
-通知メールは `eibi.soudankai@gmail.com` に届きます。
+- 月の使用時間: 約484分（GitHub Actions無料枠2000分の24%）
+- シーズンオフ（1〜2月）は workflow を手動で Disable する運用
 
 ## スプレッドシートのシート一覧
 
@@ -77,9 +96,17 @@
 | 荷物登録_回答 | フォーム回答の蓄積 |
 | 26社員マスタ | 担当営業のリスト |
 | 法人マスタ | 法人コード・代表校コード |
+| 配布物マスタ | 配付物管理の品目マスタ |
+| 配布先明細 | 配付物管理の会場別配布数量 |
+| {期}Webアカウント管理 | リモート参加 Zoomブース割当・Tamaya機材 |
 | 送信ログ | 集荷メール送信履歴 |
+| リマインドログ | リマインドメール送信履歴 |
 | 変更依頼 | 参加校からの担当者情報変更依頼 |
 | SS差異確認 | 営業SSとの差異確認済みスナップショット |
+| 取込ログ | CSV取込履歴（参加状況同期表示・取込履歴タブのソース） |
+| 仕分表備考 | 参加状況ビューアの仕分表備考 |
+| 資料管理 | 資料仕分け対象資料 |
+| 資料仕分けチェック | 資料仕分け完了チェック |
 
 ## 表示が遅い・古いと感じたら（キャッシュについて）
 
@@ -96,8 +123,17 @@
 
 ## ソースコードの管理（開発者向け）
 
-ソースコードは GitHub（kz8/LuggageWebApp）で管理し、clasp というツールでGASと同期しています。
+ソースコードは2つのGitHubリポジトリで管理されています：
+
+| リポジトリ | 内容 | 公開設定 |
+|---|---|---|
+| `kz8/LuggageWebApp` | GAS本体（clasp管理） | Public |
+| `kz8/eibi-form` | GitHub Pages（フロント・Wiki・ポータル） | Public |
+| `kz8/eibi-csv-auto` | CSV自動取得（Playwright + GitHub Actions） | Private |
+
+### clasp（GAS同期）
 
 - 複数のパソコンで開発する場合は、**作業前に必ず `clasp pull`** で最新を取得してください
-- `clasp push` は手元の内容でリモートを上書きします（マージ機能はありません）
+- `clasp push --force` は手元の内容でリモートを上書きします（マージ機能はありません）
 - `clasp deployments` でデプロイ一覧を確認できます
+- **WebApp系（OpView/Index/Receiving/Distribution/GuidanceMail/ReminderMail等）変更後は必ず GASエディタからデプロイ更新が必要**
