@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>進学相談会 業務システム 操作ガイド</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css">
+<style>
+  .reveal { font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', sans-serif; font-size: 28px; }
+  .reveal h1 { font-size: 1.8em; color: #0f1b2d; }
+  .reveal h2 { font-size: 1.4em; color: #1a2a42; border-bottom: 3px solid #1a73e8; padding-bottom: 8px; }
+  .reveal h3 { font-size: 1.1em; color: #1a73e8; }
+  .reveal table { font-size: 0.65em; margin: 0 auto; border-collapse: collapse; }
+  .reveal th { background: #0d47a1; color: #fff; padding: 6px 12px; }
+  .reveal td { border-bottom: 1px solid #e5e7eb; padding: 5px 12px; text-align: left; }
+  .reveal ul, .reveal ol { font-size: 0.85em; text-align: left; }
+  .reveal li { margin-bottom: 6px; }
+  .reveal .badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.7em; font-weight: 700; }
+  .reveal .badge-blue { background: #e8f0fe; color: #1a73e8; }
+  .reveal .badge-green { background: #e6f4ea; color: #137333; }
+  .reveal .badge-red { background: #fce8e6; color: #c5221f; }
+  .reveal .badge-orange { background: #fef7e0; color: #e37400; }
+  .reveal .tip { background: #f0f7ff; border-left: 4px solid #1a73e8; padding: 10px 16px; font-size: 0.75em; text-align: left; margin-top: 16px; border-radius: 4px; }
+  .reveal .warn { background: #fef7f6; border-left: 4px solid #c5221f; padding: 10px 16px; font-size: 0.75em; text-align: left; margin-top: 16px; border-radius: 4px; }
+  .reveal .section-title { font-size: 2em; font-weight: 900; color: #0f1b2d; }
+  .reveal .sub { color: #5f6368; font-size: 0.7em; }
+  .reveal code { background: #f5f5f5; padding: 2px 6px; border-radius: 4px; font-size: 0.85em; }
+  .reveal .img-placeholder { background: #f0f2f5; border: 2px dashed #cbd5e1; border-radius: 8px; padding: 40px; color: #9ca3af; font-size: 0.7em; text-align: center; margin: 16px 0; }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ==================== タイトル ==================== -->
+<section>
+  <h1>進学相談会<br>業務システム 操作ガイド</h1>
+  <p class="sub">株式会社栄美通信 事業部</p>
+  <p class="sub">2026年4月 更新</p>
+  <p style="margin-top:40px;font-size:0.6em;color:#9ca3af">← → キーまたはスワイプで進む ／ ↓ キーで詳細</p>
+</section>
+
+<!-- ==================== 目次 ==================== -->
+<section>
+  <h2>目次</h2>
+  <ol>
+    <li><strong>参加状況ビューア</strong> — 進捗の確認・管理</li>
+    <li><strong>配付物管理</strong> — 資料・備品の一元管理</li>
+    <li><strong>荷物登録フォーム</strong> — 参加校が送付方法を登録</li>
+    <li><strong>入庫記録</strong> — 届いた荷物の入庫処理</li>
+    <li><strong>集荷案内・リマインドメール</strong> — メール送信</li>
+  </ol>
+  <div class="tip">詳細は <a href="wiki/">業務マニュアル Wiki</a> も併せてご参照ください。</div>
+</section>
+
+<!-- ==================== 1. ビューア ==================== -->
+<section>
+<section>
+  <p class="section-title">1. 参加状況ビューア</p>
+  <p>参加校の進捗を一覧で確認・管理する画面</p>
+  <p class="sub">ポータル → 「参加状況ビューア」</p>
+</section>
+
+<section>
+  <h2>共通操作</h2>
+  <table>
+    <tr><th>操作</th><th>説明</th></tr>
+    <tr><td><strong>期</strong></td><td>前期/後期を切替。ルート一覧が変わる</td></tr>
+    <tr><td><strong>ルート</strong></td><td>物流ルートを選択 → データ取得</td></tr>
+    <tr><td><strong>区分</strong></td><td>大学・短大 / 専門学校 で絞込</td></tr>
+    <tr><td><strong>管轄</strong></td><td>本社のみに絞込</td></tr>
+    <tr><td><strong>A4縦/横</strong></td><td>印刷・PDFの用紙向き（集荷確認・仕分表のみ）</td></tr>
+    <tr><td><strong>印刷 / PDF保存</strong></td><td>印刷ダイアログを開く。PDFは「送信先→PDFに保存」</td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>集荷確認タブ</h2>
+  <p>会場ごとの参加校一覧と集荷業務の進捗を確認するメインのタブ</p>
+  <table>
+    <tr><th>列</th><th>内容</th></tr>
+    <tr><td>会場ステータス</td><td>○ P Ⓡ ｷ ● で参加状況を表示</td></tr>
+    <tr><td>予定個口 / 入庫個口</td><td>フォーム登録数 / 実際に届いた数</td></tr>
+    <tr><td>集荷メール</td><td>送信状況（前期済 MM/DD など）</td></tr>
+    <tr><td>フォーム</td><td><span class="badge badge-green">回答済</span> / <span class="badge badge-red">未回答</span></td></tr>
+    <tr><td>仕分表備考</td><td>直接入力可。<strong>改行も可能</strong>。自動保存</td></tr>
+  </table>
+  <div class="tip">学校名クリック → 入庫ダイアログが開き、個口数を直接編集できます</div>
+</section>
+
+<section>
+  <h2>仕分表タブ</h2>
+  <p>倉庫での仕分け作業に特化した一覧</p>
+  <ul>
+    <li>表示列：県 / 学校名 / 会場ステータス / 個口 / 仕分表備考</li>
+    <li>印刷して仕分け作業のチェックリストに使える</li>
+    <li>仕分表備考は改行入力可・自動保存</li>
+  </ul>
+</section>
+
+<section>
+  <h2>参加OPタブ / リモート参加タブ</h2>
+  <h3>参加OP</h3>
+  <p>学校×会場の参加ステータスをマトリクス表示</p>
+  <h3>リモート参加</h3>
+  <ul>
+    <li><strong>参加校一覧</strong> — Ⓡステータスの学校を一覧</li>
+    <li><strong>ブース管理</strong> — Zoomアカウント割当・Tamaya機材管理・ラベル生成</li>
+  </ul>
+</section>
+
+<section>
+  <h2>資料仕分けタブ</h2>
+  <p>学校ごとの資料配分を管理し、仕分け指示書を作成</p>
+  <ul>
+    <li>学校名入力 → 資料名・総数入力 → ルート別自動配分</li>
+    <li>手動で配分調整可能</li>
+    <li>仕分け完了 → 個口数入力して登録</li>
+    <li><strong>荷札生成</strong>ボタン / <strong>配布予定表</strong>ボタンで PDF ダウンロード</li>
+    <li>印刷は A4 横で出力</li>
+  </ul>
+</section>
+
+<section>
+  <h2>ダッシュボードタブ</h2>
+  <p>全校の進捗管理と学校情報の編集ができる多機能タブ</p>
+  <ul>
+    <li>学校名クリック → 編集モーダル（担当者・Tel・Mail・備考など）</li>
+    <li>フォームURLコピー / 荷札生成</li>
+    <li>営業SS差異の確認・反映・確認済みマーク</li>
+    <li>変更依頼の処理（反映 / 却下）</li>
+    <li>多彩なフィルタ（区分・管轄・メール・フォーム・入庫・仕分あり 等）</li>
+  </ul>
+</section>
+
+<section>
+  <h2>クイック検索タブ <span class="badge badge-blue">NEW</span></h2>
+  <p>電話対応中に1校だけ素早く調べる軽量検索</p>
+  <ul>
+    <li>学校名・コード・フリガナで検索 → 即座に結果表示</li>
+    <li>ダッシュボードのように全校データを読まないので<strong>高速</strong>（数百ms）</li>
+  </ul>
+  <p><strong>表示内容：</strong></p>
+  <ul>
+    <li>担当者情報（部署・氏名・Tel・Mail）</li>
+    <li>集荷メール・フォーム回答状態</li>
+    <li>ルート別進捗テーブル（送付方法・個口・入庫）</li>
+    <li>営業SS差異</li>
+  </ul>
+</section>
+
+<section>
+  <h2>入庫履歴 / フォーム回答 / 取込履歴</h2>
+  <h3>入庫履歴</h3>
+  <p>入庫記録の検索・閲覧。最大50件、<strong>入庫日の新しい順</strong>で表示</p>
+  <h3>フォーム回答</h3>
+  <p>荷物登録フォームの回答を学校×ルートで最新表示</p>
+  <h3>取込履歴</h3>
+  <p>CSV自動取込の結果ログ。OK/WARNING/ERRORのステータスとサマリー</p>
+</section>
+</section>
+
+<!-- ==================== 2. 配付物管理 ==================== -->
+<section>
+<section>
+  <p class="section-title">2. 配付物管理</p>
+  <p>資料・備品を一元管理し、会場ごとの部数を決定する画面</p>
+  <p class="sub">ポータル → 「配付物管理」</p>
+</section>
+
+<section>
+  <h2>4つのタブ</h2>
+  <table>
+    <tr><th>タブ</th><th>用途</th></tr>
+    <tr><td><strong>品目一覧</strong></td><td>品目の登録・編集・削除・ドラッグ並べ替え</td></tr>
+    <tr><td><strong>ルート別</strong></td><td>ルート×品目の部数を横展開。印刷で仕分け用紙に</td></tr>
+    <tr><td><strong>会場別</strong> <span class="badge badge-blue">NEW</span></td><td>全会場×封入品目のクロス表。俯瞰把握</td></tr>
+    <tr><td><strong>xlsx取込</strong></td><td>Excel申込書から品目を一括登録</td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>品目一覧タブ</h2>
+  <ul>
+    <li>4セクション：<strong>封入 → 単独配布 → 置き → 備品</strong></li>
+    <li>☰ ドラッグで並べ替え（同セクション内）</li>
+    <li>行クリック → 下部に品目詳細パネル展開（会場別部数入力）</li>
+    <li>「+ 品目登録」で新規追加。封入は封入数が自動入力</li>
+    <li>CL名・資料名の変更は全明細に連動</li>
+  </ul>
+</section>
+
+<section>
+  <h2>ルート別タブ</h2>
+  <ul>
+    <li>ルート選択 → 品目×会場の部数一覧</li>
+    <li>持ち回り会場は「→」で表示</li>
+    <li><strong>済チェック</strong>で作業完了を記録</li>
+    <li><strong>印刷除外チェック</strong> <span class="badge badge-blue">NEW</span> — チェックした行は印刷時に非表示</li>
+  </ul>
+  <div class="tip"><strong>備品</strong>セクションは数字未入力でも常に表示されます。「データありのみ」チェックで切替可能。</div>
+</section>
+
+<section>
+  <h2>会場別タブ <span class="badge badge-blue">NEW</span></h2>
+  <p>期全体の全会場×封入品目のクロス表</p>
+  <ul>
+    <li><strong>行</strong>：全企画（管轄順 → ルート → 日付順）</li>
+    <li><strong>列</strong>：封入品目（栄美通信の社内品は除外）</li>
+    <li><strong>セル</strong>：部数あり＝<span style="background:#e8f5e9;padding:2px 8px">緑</span> / なし＝空白</li>
+    <li>管轄グループ（東京→札幌→仙台→大阪→福岡）で区切り</li>
+    <li>サマリー：企画数・封入品目数・合計部数</li>
+  </ul>
+</section>
+
+<section>
+  <h2>xlsx取込タブ</h2>
+  <ul>
+    <li>顧客の配付物申込書（Excel）をアップロード</li>
+    <li>各シート＝1品目。会場名・開催日で企画設定と照合</li>
+    <li>マッチした会場に倉庫部数を自動入力</li>
+    <li>既存の同名品目はスキップ</li>
+    <li>未マッチの都市がある場合は結果メッセージに表示</li>
+  </ul>
+</section>
+</section>
+
+<!-- ==================== 3. フォーム ==================== -->
+<section>
+<section>
+  <p class="section-title">3. 荷物登録フォーム</p>
+  <p>参加校が送付方法と個口数を登録するWebフォーム</p>
+  <p class="sub">集荷案内メール内のリンクからアクセス</p>
+</section>
+
+<section>
+  <h2>参加校の操作フロー</h2>
+  <ol>
+    <li><strong>フォームを開く</strong> — メールのリンクをクリック</li>
+    <li><strong>送付方法を選ぶ</strong> — 倉庫へ送付 / 会場直送 / 持込</li>
+    <li><strong>個口数・備考を入力</strong></li>
+    <li><strong>送信</strong> → 確認メールが届く</li>
+  </ol>
+  <div class="tip">同じURLから何度でも再登録可能（最新の内容で上書き）</div>
+</section>
+
+<section>
+  <h2>送付方法ごとのご案内カード <span class="badge badge-blue">NEW</span></h2>
+  <h3>「倉庫へ送付」を選択すると：</h3>
+  <ul>
+    <li>倉庫の住所・宛名・電話番号が表示される</li>
+    <li>「住所をコピー」ボタンで送り状記入に使える</li>
+  </ul>
+  <h3>「会場直送」を選択すると：</h3>
+  <ul>
+    <li>着日ルール（当日午前中着 / 一部前日着）が表示される</li>
+    <li>荷物取扱いのご案内へのリンク</li>
+  </ul>
+</section>
+
+<section>
+  <h2>荷札PDF / リンクボタン</h2>
+  <h3>荷札PDF</h3>
+  <ul>
+    <li>通常モード（ルートごとに1枚）/ 会場別モード</li>
+    <li>QRコードの下に「テープを貼らないで」の注意書きあり</li>
+  </ul>
+  <h3>フォーム画面のリンクボタン</h3>
+  <ul>
+    <li>📦 <strong>荷物取扱いのご案内</strong> — 梱包・発送・返送の手順</li>
+    <li>📘 <strong>進学相談会 実施ガイド</strong> — 当日の運営方法・集合時間</li>
+  </ul>
+</section>
+</section>
+
+<!-- ==================== 4. 入庫記録 ==================== -->
+<section>
+<section>
+  <p class="section-title">4. 入庫記録</p>
+  <p>届いた荷物の入庫処理を行う画面</p>
+  <p class="sub">ポータル → 「入庫記録」</p>
+</section>
+
+<section>
+  <h2>操作手順</h2>
+  <ol>
+    <li><strong>学校を検索</strong> — 学校名またはコードを入力 → 候補から選択</li>
+    <li><strong>ルートを選択</strong> — 参加しているルート一覧から該当を選択</li>
+    <li><strong>入庫個口数を入力</strong> — 予定個口数と照合しながら入力</li>
+    <li><strong>保存</strong></li>
+  </ol>
+  <h3>履歴タブ</h3>
+  <p>直近50件の入庫履歴を<strong>入庫日の新しい順</strong>に表示</p>
+  <div class="tip">ビューアの集荷確認タブからも入庫個口を直接編集できます</div>
+</section>
+</section>
+
+<!-- ==================== 5. メール ==================== -->
+<section>
+<section>
+  <p class="section-title">5. 集荷案内・リマインドメール</p>
+  <p>参加校への案内メール送信・督促メール送信</p>
+  <p class="sub">ポータル → 「集荷案内メール送信」/「リマインドメール送信」</p>
+</section>
+
+<section>
+  <h2>集荷案内メール — 操作手順</h2>
+  <ol>
+    <li><strong>送付期限の範囲</strong>を指定 → 対象校が一覧表示</li>
+    <li>不要な学校のチェックを外す</li>
+    <li><strong>行クリック</strong>でメール本文プレビュー</li>
+    <li>送信モードを選んで実行</li>
+  </ol>
+  <table>
+    <tr><th>モード</th><th>動作</th></tr>
+    <tr><td><strong>通常送信</strong></td><td>参加校にメールが届く</td></tr>
+    <tr><td><strong>下書き作成</strong></td><td>Gmailの下書きに保存（まだ届かない）</td></tr>
+    <tr><td><strong>テスト送信</strong></td><td>自分宛に届く（参加校には届かない）</td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>メールに含まれる内容</h2>
+  <ul>
+    <li>参加会場一覧と送付期限</li>
+    <li>キャンセル待ち会場（該当あれば）</li>
+    <li><strong>倉庫送付先の住所</strong>（本文に直接記載）<span class="badge badge-blue">NEW</span></li>
+    <li><strong>実施ガイドへの誘導カード</strong> <span class="badge badge-blue">NEW</span></li>
+    <li>荷物登録フォームへのリンク</li>
+    <li>Chrome複数アカウント時の注意書き</li>
+    <li>添付：荷物取扱いのご案内PDF</li>
+  </ul>
+</section>
+
+<section>
+  <h2>リマインドメール</h2>
+  <ul>
+    <li>集荷案内送信済みでフォーム未回答 or 未入庫の学校が対象</li>
+    <li>期限前（3日以内）と期限超過で文面が変わる</li>
+    <li>操作は集荷案内と同じ3モード</li>
+  </ul>
+  <h3>自動下書き作成（毎朝 平日7-8時）</h3>
+  <ul>
+    <li>集荷案内・リマインドとも自動で下書きが作成される</li>
+    <li>通知メールが届く → Gmailの下書きを確認 → 送信</li>
+  </ul>
+</section>
+</section>
+
+<!-- ==================== パフォーマンス ==================== -->
+<section>
+  <h2>パフォーマンス改善 <span class="badge badge-blue">NEW</span></h2>
+  <p>ビューア・フォームの表示速度が大幅に向上しました</p>
+  <ul>
+    <li>シートデータのキャッシュ導入（2回目以降の表示が高速化）</li>
+    <li>キャッシュサイズ制限（100KB）を突破するチャンク分割対応</li>
+    <li>データ書込み時はキャッシュが自動無効化（データ齟齬なし）</li>
+    <li>フォームのプリフィル（前回回答の自動入力）もキャッシュ対応</li>
+  </ul>
+  <div class="tip">表示がおかしい場合は、スプレッドシートのメニュー「システム → キャッシュクリア」を実行してください</div>
+</section>
+
+<!-- ==================== まとめ ==================== -->
+<section>
+  <h2>まとめ・リンク集</h2>
+  <table>
+    <tr><th>リソース</th><th>URL</th></tr>
+    <tr><td>ポータル</td><td><a href="portal.html">portal.html</a></td></tr>
+    <tr><td>業務マニュアル Wiki</td><td><a href="wiki/">wiki/</a></td></tr>
+    <tr><td>荷物取扱いのご案内</td><td><a href="guide.html">guide.html</a></td></tr>
+  </table>
+  <div class="tip" style="margin-top:24px">
+    <strong>困ったときは</strong><br>
+    Wiki の各ページ末尾に「よくある質問」があります。<br>
+    キャッシュの問題 → 「システム → キャッシュクリア」→ ページ再読込
+  </div>
+</section>
+
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script>
+Reveal.initialize({
+  hash: true,
+  slideNumber: 'c/t',
+  width: 960,
+  height: 700,
+  margin: 0.1,
+  transition: 'slide',
+  center: true
+});
+</script>
+</body>
+</html>
