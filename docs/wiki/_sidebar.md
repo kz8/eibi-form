@@ -2,6 +2,7 @@
 - **横断ガイド**
   - [シナリオ別ガイド](scenarios.md)
   - [季節カレンダー](calendar.md)
+  - [運用判断ログ](decisions.md)
 - **運用ガイド**
   - [集荷案内メール送信](guide-mail.md)
   - [荷物登録フォーム](guide-form.md)
