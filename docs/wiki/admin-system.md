@@ -64,12 +64,16 @@
 | 実行時刻 | 関数 | 内容 | 通知先 |
 |---|---|---|---|
 | 毎日 8:00 / 17:00 | `runCLChangeNotification` | 営業SSとの差異 + フォーム変更依頼の通知メール | eibi.soudankai@gmail.com |
-| 毎朝 7-8時 | `autoCreateGuidanceDrafts` | 集荷案内メールの下書き自動作成（期限14〜21日後の対象） | chikoshima@eibi.co.jp |
-| 毎朝 7-8時 | `autoCreateReminderDrafts` | リマインドメールの下書き自動作成（未回答 期限3日前/超過） | chikoshima@eibi.co.jp |
-| 1時間ごと | `autoImportCSV` | CSV取込フォルダにCSVがあれば取込 | （ログのみ） |
+| 毎朝 7-8時 | `autoCreateGuidanceDrafts` | 集荷案内メールの下書き自動作成（**期限30〜37日後**の対象。締切1ヶ月前発動。2026-04-24に旧14〜21日後から変更） | chikoshima@eibi.co.jp |
+| 毎朝 7-8時 | `autoCreateReminderDrafts` | リマインドメールの下書き自動作成（未回答 期限3日前/超過。終了済み会場はスキップ） | chikoshima@eibi.co.jp |
+| 1日2回（9時・18時） | `checkAllSentDrafts` | Gmail送信済みフォルダを件名・宛先・日時で照合し、ログを「下書き作成」→「成功」に更新 | （ログのみ） |
+| 5分ごと | `warmupFormCache` | 顧客向けフォームの4キャッシュを温め（参加データ・期限マップ・プリフィル・学校基本情報） | （なし） |
+| 1時間ごと | `autoImportCSV` | CSV取込フォルダにCSVがあれば取込（4フェーズ化済み・タイムアウト対策あり） | （取込ログ） |
 
 > 自動下書き作成は **下書きを作るだけで送信しません**。出社後にGmail下書きフォルダで内容確認 → 手動で送信。
 > 下書きを削除すれば再実行で再作成されます（リマインド送信済みフラグは実送信時のみ立つため）。
+> `checkAllSentDrafts` は手動送信した下書きの実送信を検知してログを更新する仕組み（送信済み判定）。
+> 集荷案内・リマインド・CL変更通知すべてのトリガーで **土日はスキップ** されます。
 
 ### GitHub Actions トリガー（CSV自動取得）
 
@@ -81,6 +85,8 @@ eibi-csv-auto リポジトリで稼働中の Playwright スクリプト：
 
 - 月の使用時間: 約484分（GitHub Actions無料枠2000分の24%）
 - シーズンオフ（1〜2月）は workflow を手動で Disable する運用
+- Node.js 24対応済み（`FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true`）
+- `autoImportCSV` 内で `buildDiffSummary_()` を呼び出し、新規参加・撤退・ステータス変更などを取込ログに記録（参加状況ビューアの「取込履歴」タブから閲覧可能）
 
 ## スプレッドシートのシート一覧
 
@@ -107,6 +113,8 @@ eibi-csv-auto リポジトリで稼働中の Playwright スクリプト：
 | 仕分表備考 | 参加状況ビューアの仕分表備考 |
 | 資料管理 | 資料仕分け対象資料 |
 | 資料仕分けチェック | 資料仕分け完了チェック |
+| ペア校マスタ | 大学×短大のペア（短大データを大学にフォールバック表示する判定に使用） |
+| 問題一覧 | `checkRepCode` の出力（法人マスタ代表校コードの整合性チェック結果） |
 
 ## 表示が遅い・古いと感じたら（キャッシュについて）
 
@@ -137,3 +145,33 @@ eibi-csv-auto リポジトリで稼働中の Playwright スクリプト：
 - `clasp push --force` は手元の内容でリモートを上書きします（マージ機能はありません）
 - `clasp deployments` でデプロイ一覧を確認できます
 - **WebApp系（OpView/Index/Receiving/Distribution/GuidanceMail/ReminderMail等）変更後は必ず GASエディタからデプロイ更新が必要**
+
+### 主要なGASファイル
+
+| ファイル | 役割 |
+|---|---|
+| LuggageWebApp.js | 顧客向け荷物登録フォームのサーバーサイド＋ doGet ルーティング |
+| Index.html | 荷物登録フォーム UI |
+| receivingHandler.js / ReceivingIndex.html | 入庫記録（QRスキャン/単校/法人一括/履歴） |
+| Opview.js / OpViewIndex.html | 参加状況ビューア（9タブ） |
+| Guidancemail.js / GuidanceMail.html | 集荷案内メール送信 |
+| Remindermail.js / ReminderMail.html | リマインドメール送信 |
+| distributionHandler.js / DistributionIndex.html | 配付物管理（5タブ） |
+| materialSorting.js | 資料仕分け（OpView 4タブ目） |
+| importCSV.js | CSV取込（4フェーズ化済み・タイムアウト対策） |
+| clChangeNotifier.js | CL変更通知（営業SS差異＋変更依頼を1通にまとめて通知。土日スキップ） |
+| boothLabel.js | リモートブース管理ラベルPDF生成 |
+| luggageLabel.js | 荷札PDF生成（参加校向けフォームボタン＋管理者向け一括生成＋資料仕分け荷札） |
+| **venueMatch.js** | 実施ガイドPDF抽出データ（GitHub Pages `eibi-form/docs/data/venues.json`）と企画設定の突合（2026-04-24追加） |
+| **diagnosePair.js** | ペア校フォールバック診断ツール（手動実行用） |
+| **checkSentDrafts.js** | Gmail送信済みフォルダ照合→ログを「下書き作成」→「成功」に更新（1日2回トリガー） |
+| settingsHandler.js / SettingsIndex.html | 企画設定・物流設定の CRUD UI |
+
+### 外部データ連携
+
+| データソース | 用途 | 取得方法 |
+|---|---|---|
+| `kz8.github.io/eibi-form/data/venues.json` | 実施ガイドPDF抽出の会場住所データ（69件。会場ごとの郵便番号・住所・名称） | GAS から `UrlFetchApp` で取得（1hキャッシュ。`venueMatch.js`） |
+| 営業SS（別スプレッドシート） | 担当者情報のマスター | OpView から差異検知＋反映 |
+| Gmail送信済みフォルダ | 集荷案内・リマインドの実送信検知 | `checkSentDrafts.js` で1日2回照合 |
+| Driveの参加申込CSV | 参加状況の取込元 | `importCSV.js` で1時間ごと取込 |
