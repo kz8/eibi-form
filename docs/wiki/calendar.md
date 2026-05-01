@@ -154,7 +154,7 @@
 |------|------|------|
 | `runCLChangeNotification` | 平日 8:00 / 17:00 | CL情報の変更通知（土日スキップ） |
 | `warmupFormCache` | 5分ごと | フォームキャッシュ温め |
-| `autoImportCSV` | 1時間ごと | CSV取込（取込ログ記録） |
+| `autoImportCSV` | 15分ごと | CSV取込（取込ログ記録）。2026-04-28以降 1時間ごと→15分ごとに変更 |
 | `checkAllSentDrafts` | 平日 9:00 / 18:00 | Gmail送信済み判定 |
 | `autoCreateGuidanceDrafts` | 平日 7-8時 | 期限30〜37日後の校。対象なしでも空振り |
 | `autoCreateReminderDrafts` | 平日 7-8時 | 同上 |
