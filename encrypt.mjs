@@ -3,23 +3,31 @@
  * portal-src.html → portal.html 暗号化スクリプト
  * portal-admin-src.html → portal-admin.html も同時処理
  * Usage: node encrypt.mjs
- * パスワードをプロンプトで入力
+ * パスワードとアクセストークンをプロンプトで入力
+ *
+ * 2026-10-08追加: ソースファイル（docs/portal-src.html等）には
+ * __INTERNAL_TOKEN__ というプレースホルダーのまま置いておき、
+ * ここで入力したトークンはメモリ上でのみ置換してから暗号化する。
+ * 本物のトークンの値が、コミットされるファイルに書き込まれることは無い。
  */
 import { readFileSync, writeFileSync } from 'fs';
 import { webcrypto } from 'crypto';
 import { createInterface } from 'readline';
 
 const rl = createInterface({ input: process.stdin, output: process.stderr });
-const askPassword = () => new Promise(r => rl.question('パスワード: ', pw => { rl.close(); r(pw); }));
+const ask = (q) => new Promise(r => rl.question(q, (v) => r(v)));
 
-const pw = await askPassword();
+const pw = await ask('パスワード: ');
 if (!pw) { console.error('パスワードが入力されていません'); process.exit(1); }
+const token = await ask('アクセストークン（&t=の値。空ならプレースホルダーのまま残す）: ');
+rl.close();
 
 const b64 = (a) => Buffer.from(a).toString('base64');
 const enc = new TextEncoder();
 
 async function encryptFile(srcPath, destPath) {
-  const src = readFileSync(srcPath, 'utf8');
+  let src = readFileSync(srcPath, 'utf8');
+  if (token) src = src.split('__INTERNAL_TOKEN__').join(token);
   const salt = webcrypto.getRandomValues(new Uint8Array(16));
   const iv = webcrypto.getRandomValues(new Uint8Array(12));
   const keyMaterial = await webcrypto.subtle.importKey('raw', enc.encode(pw), 'PBKDF2', false, ['deriveKey']);
